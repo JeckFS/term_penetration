@@ -1,0 +1,7 @@
+/**/node_modules
+*.log
+.idea
+/**/out
+/**/deploy
+/**/*.tar
+/**/build

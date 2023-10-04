@@ -1,0 +1,56 @@
+<project name="ExeServer" default="dev">
+    <property name="BASEDIR" value="deploy"/>
+    <property name="CLASSES" value="${BASEDIR}/classes"/>
+    <property name="LIB" value="./lib"/>
+    <property name="SRC_PATH" value="${basedir}/src"/>
+    <property name="APP_NAME" value="ExeServer"/>
+
+    <macrodef name="build-env">
+        <attribute name="env" default="dev"/>
+        <attribute name="deploy" default="${BASEDIR}/${APP_NAME}"/>
+        <attribute name="includes" default="appconfig/**"/>
+
+        <sequential>
+            <antcall target="build"/>
+            <mkdir dir="@{deploy}"/>
+        </sequential>
+    </macrodef>
+
+    <target name="dev">
+        <build-env env="dev"/>
+    </target>
+
+
+    <target name ="build">
+        <antcall target="clean"/>
+        <antcall target="compile"/>
+        <antcall target="deploy"/>
+    </target>
+    <target name="clean">
+        <delete dir="${BASEDIR}"/>
+    </target>
+
+    <target name="compile" description="compile local class">
+        <mkdir dir="${CLASSES}"/>
+        <copy todir="${CLASSES}">
+            <fileset dir="${SRC_PATH}">
+                <exclude name="com/**/*.jar"/>
+                <include name="com/**"/>
+            </fileset>
+        </copy>
+
+        <javac srcdir="${SRC_PATH}" destdir="${CLASSES}"
+               debug="yes" includes="**" includeAntRuntime="no" encoding="utf-8">
+            <classpath>
+                <fileset dir="${LIB}">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="deploy" description="generate jar file according to deploy/classes">
+        <mkdir dir="${BASEDIR}"/>
+        <jar destfile="${BASEDIR}/${APP_NAME}.jar" encoding="utf-8" basedir="${CLASSES}"/>
+    </target>
+</project>

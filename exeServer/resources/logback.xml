@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+    <property name="LOG_HOME" value="logs"/>
+
+    <!--方式一：设置日志根目录，参数LOG_HOME地址，该方法是为LOG_HOME添加默认值，需要janino支持-->
+    <if condition='property("LOG_HOME")==""'>
+        <then>
+            <property name="LOG_HOME" value="${user.dir}" />
+        </then>
+    </if>
+    <!--方式二：设置日志根目录，直接指定-->
+    <!--<property name="LOG_HOME" value="/testLog/apache-tomcat-9.0.21" />-->
+
+    <property name="outformat" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}[%file:%line]:%msg%n"/>
+
+    <!-- <logger name="org.hibernate" level="WARN"/> -->
+    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="org.apache.ftpserver" level="ERROR"/>
+    <logger name="io.netty" level="ERROR"/>
+    <logger name="oshi" level="ERROR"/>
+
+    <!--控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                ${outformat}
+            </pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件日志输出 -->
+    <appender name="file"  class="ch.qos.logback.core.rolling.RollingFileAppender" >
+        <file>${LOG_HOME}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/info.%d{yyyy-MM-dd}-%i.log </FileNamePattern>
+            <MaxHistory>20</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+
+        <!-- 只输出level级别及以上日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>${outformat}</pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件日志输出 -->
+    <appender name="file_error"  class="ch.qos.logback.core.rolling.RollingFileAppender" >
+        <file>${LOG_HOME}/error/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/error/error.%d{yyyy-MM-dd}-%i.log </FileNamePattern>
+            <MaxHistory>20</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+
+        <!-- 只输出level级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${outformat}</pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="console" />
+        <appender-ref ref="file" />
+        <appender-ref ref="file_error" />
+    </root>
+
+</configuration>
