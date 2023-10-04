@@ -21,8 +21,8 @@ term penetration 设计要点：
 * 前端通过 npm run build 打包出前端介质，并传至远程服务器中（也可以不熟在主机 A 中但会增大通信上的开销）
 
 前端部署：
-* 安装 Tomcat 将前端脚本防至 webapps 目录下，并启动 Tomcat
-* 安装 Nginx ，完成代理转发。相关配置如下
+* 安装 Tomcat 将打包好的前端静态资源放至 webapps 目录下，并启动 Tomcat
+* 安装 Nginx ，完成代理转发。 Nginx 相关配置如下
 
 ```shell
 http {
